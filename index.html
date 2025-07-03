@@ -14,7 +14,7 @@
       text-align: center;
     }
     select {
-      margin: 0.5rem;
+      margin: 1rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
     }
@@ -33,25 +33,25 @@
 
   <h1>TVPHAtp Unified Player</h1>
 
-  <!-- Mode Switcher -->
   <select id="modeSwitcher">
     <option value="dash">📺 DASH Streaming</option>
     <option value="youtube">▶️ YouTube Queue</option>
     <option value="mp3">🎵 MP3 Playlist</option>
   </select>
 
-  <!-- DASH Player -->
+  <select id="dashChannelSelector" style="display: none;"></select>
+
+  <!-- DASH PLAYER -->
   <div id="dashPlayer" class="player-wrapper">
-    <select id="dashSelector"></select>
     <video id="videoPlayer" controls autoplay muted></video>
   </div>
 
-  <!-- YouTube Player -->
+  <!-- YOUTUBE PLAYER -->
   <div id="youtubePlayer" class="player-wrapper">
-    <iframe id="ytIframe" width="800" height="450" frameborder="0" allowfullscreen></iframe>
+    <iframe id="ytIframe" width="800" height="450" src="" frameborder="0" allowfullscreen></iframe>
   </div>
 
-  <!-- MP3 Player -->
+  <!-- MP3 PLAYER -->
   <div id="mp3Player" class="player-wrapper">
     <audio id="mp3Audio" controls autoplay></audio>
     <br>
@@ -59,38 +59,73 @@
   </div>
 
 <script>
-  // DASH Channel List
   const dashChannels = [
-    { name: "Cinemax", url: "https://tv-puce-rho.vercel.app/cg_cinemax.mpd" },
-    { name: "CNN HD", url: "https://tv-puce-rho.vercel.app/cg_cnnhd.mpd" },
-    { name: "HBO Family", url: "https://tv-puce-rho.vercel.app/cg_hbofam.mpd" },
-    { name: "HBO HD", url: "https://tv-puce-rho.vercel.app/cg_hbohd.mpd" },
-    { name: "HBO Hits", url: "https://tv-puce-rho.vercel.app/cg_hbohits.mpd" },
-    { name: "HBO Signature", url: "https://tv-puce-rho.vercel.app/cg_hbosign.mpd" },
-    { name: "One Sports", url: "https://tv-puce-rho.vercel.app/cg_onesports.mpd" },
-    { name: "One Sports HD", url: "https://tv-puce-rho.vercel.app/cg_onesports+HD.mpd" },
-    { name: "Tagalog Movies", url: "https://tv-puce-rho.vercel.app/cg_tagalogmovie.mpd" },
-    { name: "Warner HD", url: "https://tv-puce-rho.vercel.app/cg_warnerhd.mpd" },
-    { name: "Channel 2", url: "https://tv-puce-rho.vercel.app/chanel2.mpd" },
-    { name: "Cinemo", url: "https://tv-puce-rho.vercel.app/cinemo-dash-abscbn.mpd" },
-    { name: "GTV", url: "https://tv-puce-rho.vercel.app/Gtv.mpd" },
-    { name: "Nickelodeon HD", url: "https://tv-puce-rho.vercel.app/nickelodeonHD.mpd" },
-    { name: "One News", url: "https://tv-puce-rho.vercel.app/OneNews.mpd" },
-    { name: "One PH", url: "https://tv-puce-rho.vercel.app/OnePH.mpd" },
-    { name: "PBO", url: "https://tv-puce-rho.vercel.app/PBOsd.mpd" },
-    { name: "PBA Rush", url: "https://tv-puce-rho.vercel.app/PbaRush.mpd" },
-    { name: "TopAction Flix", url: "https://tv-puce-rho.vercel.app/TopAction_flix.mpd" },
-    { name: "TV5", url: "https://tv-puce-rho.vercel.app/TV5.mpd" },
-    { name: "Warner", url: "https://tv-puce-rho.vercel.app/warnerHD.mpd" }
+    {
+      name: "Kapamilya HD",
+      manifest: "https://amagivercel.vercel.app/api/proxy?url=https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-kapcha-dash-abscbnono/index.mpd",
+      drm: {
+        type: "clearkey",
+        keyId: "bd17afb5dc9648a39be79ee3634dd4b8",
+        key: "3ecf305d54a7729299b93a3d69c02ea5"
+      }
+    },
+   {
+    name: "Cartoon Network HD",
+    manifest: 'https://qp-pldt-live-grp-12-prod.akamaized.net/out/u/dr_cartoonnetworkhd.mpd',
+    image: 'https://static.wikia.nocookie.net/logopedia/images/d/d9/Cartoon_Network_2010.svg/revision/latest?cb=20200617213702',
+    drm: {
+        type: 'clearkey',
+        keyId: 'a2d1f552ff9541558b3296b5a932136b',
+        key: 'cdd48fa884dc0c3a3f85aeebca13d444'
+    }
+}, // Example Image URL
+{
+    name: "Cinemo",
+    manifest: 'https://amagivercel.vercel.app/api/proxy?url=https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-cinemo-dash-abscbnono/f1da36ea-047e-4262-9e45-9326d0e2930b/index.mpd',
+    drm: {
+        type: 'clearkey',
+        keyId: 'aa8aebe35ccc4541b7ce6292efcb1bfb',
+        key: 'aab1df109d22fc5d7e3ec121ddf24e5f'
+    }
+}, {
+    name: "Cinema One",
+    manifest: 'https://amagivercel.vercel.app/api/proxy?url=https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg01006-abs-cbn-cinemaone-dash-abscbnono/index.mpd',
+    drm: {
+        type: 'clearkey',
+        keyId: '58d0e56991194043b8fb82feb4db7276',
+        key: 'd68f41b59649676788889e19fb10d22c'
+    }
+}, {
+    name: "GMA 7",
+    manifest: 'https://proxy.nathcreqtives.com/api/manifest/1093.mpd',
+    drm: {
+        type: 'widevine',
+        licenseUri: CONVRG_LICENSE_URI
+    },
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/GMA_Network_logo.svg/1200px-GMA_Network_logo.svg.png'
+}, // Example Image URL
+{
+    name: "GTV (CON)",
+    manifest: 'https://proxy.nathcreqtives.com/api/manifest/1164.mpd',
+    drm: {
+        type: 'widevine',
+        licenseUri: CONVRG_LICENSE_URI
+    }
+}, {
+    name: "Jeepney TV (CON)",
+    manifest: 'https://proxy.nathcreqtives.com/api/manifest/1250.mpd',
+    drm: {
+        type: 'widevine',
+        licenseUri: CONVRG_LICENSE_URI
+    }
+    
   ];
 
-  // YouTube Queue
   const ytQueue = [
     "https://www.youtube.com/embed/jfKfPfyJRdk",
     "https://www.youtube.com/embed/5qap5aO4i9A"
   ];
 
-  // MP3 Playlist
   const mp3Files = [
     "/music/song1.mp3",
     "/music/song2.mp3"
@@ -105,35 +140,28 @@
   const dashDiv = document.getElementById("dashPlayer");
   const ytDiv = document.getElementById("youtubePlayer");
   const mp3Div = document.getElementById("mp3Player");
-  const dashSelector = document.getElementById("dashSelector");
+  const dashSelector = document.getElementById("dashChannelSelector");
 
-  // Populate DASH selector
-  dashChannels.forEach((ch, index) => {
+  // Populate DASH channel selector
+  dashChannels.forEach((ch, i) => {
     const opt = document.createElement("option");
-    opt.value = index;
+    opt.value = i;
     opt.textContent = ch.name;
     dashSelector.appendChild(opt);
-  });
-  dashSelector.value = currentDASH;
-
-  // Handle DASH channel change
-  dashSelector.addEventListener("change", () => {
-    currentDASH = parseInt(dashSelector.value);
-    localStorage.setItem("dashIndex", currentDASH);
-    dashPlayer.attachSource(dashChannels[currentDASH].url);
   });
 
   function switchMode(mode) {
     dashDiv.style.display = "none";
     ytDiv.style.display = "none";
     mp3Div.style.display = "none";
+    dashSelector.style.display = "none";
 
     localStorage.setItem("lastMode", mode);
 
     if (mode === "dash") {
       dashDiv.style.display = "block";
-      dashSelector.value = currentDASH;
-      dashPlayer.initialize(document.getElementById("videoPlayer"), dashChannels[currentDASH].url, true);
+      dashSelector.style.display = "inline-block";
+      loadDASH(currentDASH);
     } else if (mode === "youtube") {
       ytDiv.style.display = "block";
       document.getElementById("ytIframe").src = ytQueue[currentYT];
@@ -145,31 +173,51 @@
     }
   }
 
+  function loadDASH(index) {
+    currentDASH = index;
+    localStorage.setItem("dashIndex", index);
+
+    const video = document.getElementById("videoPlayer");
+    video.pause();
+    video.src = ""; // clear
+
+    const selected = dashChannels[index];
+    dashPlayer.reset();
+    dashPlayer.initialize(video, null, true);
+
+    if (selected.drm) {
+      dashPlayer.setProtectionData({
+        "org.w3.clearkey": {
+          clearkeys: {
+            [selected.drm.keyId]: selected.drm.key
+          }
+        }
+      });
+    }
+
+    dashPlayer.attachSource(selected.manifest);
+  }
+
   function playNextMp3() {
     currentMP3 = (currentMP3 + 1) % mp3Files.length;
     document.getElementById("mp3Audio").src = mp3Files[currentMP3];
     localStorage.setItem("mp3Index", currentMP3);
   }
 
-  // Auto-play next DASH channel when current ends
-  const videoElement = document.getElementById("videoPlayer");
-  videoElement.addEventListener("ended", () => {
-    currentDASH = (currentDASH + 1) % dashChannels.length;
-    dashSelector.value = currentDASH;
-    localStorage.setItem("dashIndex", currentDASH);
-    dashPlayer.attachSource(dashChannels[currentDASH].url);
-  });
-
-  // Init
   switcher.addEventListener("change", () => {
     switchMode(switcher.value);
   });
 
-  const lastMode = localStorage.getItem("lastMode") || "dash";
-  switcher.value = lastMode;
-  switchMode(lastMode);
+  dashSelector.addEventListener("change", () => {
+    loadDASH(parseInt(dashSelector.value));
+  });
 
-  // Register Service Worker
+  // Initial load
+  switcher.value = localStorage.getItem("lastMode") || "dash";
+  dashSelector.value = currentDASH;
+  switchMode(switcher.value);
+
+  // Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
       .then(reg => console.log('✅ Service Worker registered:', reg.scope))
