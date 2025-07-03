@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TVPHAtp - Unified Player</title>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js"></script>
+  <style>
+    body {
+      background: #121212;
+      color: #eee;
+      font-family: sans-serif;
+      padding: 2rem;
+      text-align: center;
+    }
+    select {
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+    .player-wrapper {
+      display: none;
+    }
+    video, iframe, audio {
+      width: 80%;
+      max-width: 800px;
+      margin: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>TVPHAtp Unified Player</h1>
+
+  <select id="modeSwitcher">
+    <option value="dash">📺 DASH Streaming</option>
+    <option value="youtube">▶️ YouTube Queue</option>
+    <option value="mp3">🎵 MP3 Playlist</option>
+  </select>
+
+  <!-- DASH PLAYER -->
+  <div id="dashPlayer" class="player-wrapper">
+    <video id="videoPlayer" controls autoplay muted></video>
+  </div>
+
+  <!-- YOUTUBE PLAYER -->
+  <div id="youtubePlayer" class="player-wrapper">
+    <iframe id="ytIframe" width="800" height="450" src="" frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <!-- MP3 PLAYER -->
+  <div id="mp3Player" class="player-wrapper">
+    <audio id="mp3Audio" controls autoplay></audio>
+    <br>
+    <button onclick="playNextMp3()">⏭ Next Song</button>
+  </div>
+
+<script>
+  const dashUrls = [
+"cg_cinemax.mpd",
+"cg_cnnhd.mpd"
+"cg_hbofam.mpd"
+"cg_hbohd.mpd"
+"cg_hbohits.mpd"
+"cg_hbohits.mpd"
+"cg_hbosign.mpd"
+"cg_onesports.mpd"
+"cg_onesports+HD.mpd"
+"cg_tagalogmovie.mpd"
+"cg_warnerhd.mpd"
+"chanel2.mpd"
+"cinemo-dash-abscbn.mpd"
+"Gtv.mpd"
+"nickelodeonHD.mpd"
+"OneNews.mpd"
+"OnePH.mpd"
+"PBOsd.mpd"
+"PbaRush.mpd"
+"TopAction_flix.mpd"
+"TV5.mpd"
+"warnerHD.mpd"
+  ];
+
+  const ytQueue = [
+    "https://www.youtube.com/embed/jfKfPfyJRdk",
+    "https://www.youtube.com/embed/5qap5aO4i9A"
+  ];
+
+  const mp3Files = [
+    "/music/song1.mp3",
+    "/music/song2.mp3"
+  ];
+
+  let currentYT = parseInt(localStorage.getItem("ytIndex")) || 0;
+  let currentMP3 = parseInt(localStorage.getItem("mp3Index")) || 0;
+
+  const dashPlayer = dashjs.MediaPlayer().create();
+  const switcher = document.getElementById("modeSwitcher");
+  const dashDiv = document.getElementById("dashPlayer");
+  const ytDiv = document.getElementById("youtubePlayer");
+  const mp3Div = document.getElementById("mp3Player");
+
+  function switchMode(mode) {
+    dashDiv.style.display = "none";
+    ytDiv.style.display = "none";
+    mp3Div.style.display = "none";
+
+    localStorage.setItem("lastMode", mode);
+
+    if (mode === "dash") {
+      dashDiv.style.display = "block";
+      dashPlayer.initialize(document.getElementById("videoPlayer"), dashUrls[0], true);
+    } else if (mode === "youtube") {
+      ytDiv.style.display = "block";
+      document.getElementById("ytIframe").src = ytQueue[currentYT];
+      localStorage.setItem("ytIndex", currentYT);
+    } else if (mode === "mp3") {
+      mp3Div.style.display = "block";
+      document.getElementById("mp3Audio").src = mp3Files[currentMP3];
+      localStorage.setItem("mp3Index", currentMP3);
+    }
+  }
+
+  function playNextMp3() {
+    currentMP3 = (currentMP3 + 1) % mp3Files.length;
+    document.getElementById("mp3Audio").src = mp3Files[currentMP3];
+    localStorage.setItem("mp3Index", currentMP3);
+  }
+
+  switcher.addEventListener("change", () => {
+    switchMode(switcher.value);
+  });
+
+  const lastMode = localStorage.getItem("lastMode") || "dash";
+  switcher.value = lastMode;
+  switchMode(lastMode);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+      .catch(err => console.warn('❌ Service Worker error:', err));
+  }
+</script>
+
+</body>
+</html>
