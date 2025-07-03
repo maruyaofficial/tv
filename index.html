@@ -14,7 +14,7 @@
       text-align: center;
     }
     select {
-      margin-bottom: 1rem;
+      margin: 0.5rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
     }
@@ -33,23 +33,25 @@
 
   <h1>TVPHAtp Unified Player</h1>
 
+  <!-- Mode Switcher -->
   <select id="modeSwitcher">
     <option value="dash">📺 DASH Streaming</option>
     <option value="youtube">▶️ YouTube Queue</option>
     <option value="mp3">🎵 MP3 Playlist</option>
   </select>
 
-  <!-- DASH PLAYER -->
+  <!-- DASH Player -->
   <div id="dashPlayer" class="player-wrapper">
+    <select id="dashSelector"></select>
     <video id="videoPlayer" controls autoplay muted></video>
   </div>
 
-  <!-- YOUTUBE PLAYER -->
+  <!-- YouTube Player -->
   <div id="youtubePlayer" class="player-wrapper">
-    <iframe id="ytIframe" width="800" height="450" src="" frameborder="0" allowfullscreen></iframe>
+    <iframe id="ytIframe" width="800" height="450" frameborder="0" allowfullscreen></iframe>
   </div>
 
-  <!-- MP3 PLAYER -->
+  <!-- MP3 Player -->
   <div id="mp3Player" class="player-wrapper">
     <audio id="mp3Audio" controls autoplay></audio>
     <br>
@@ -57,39 +59,38 @@
   </div>
 
 <script>
-  const dashUrls = [
-const dashUrls = [
-  "https://tv-puce-rho.vercel.app/cg_cinemax.mpd",
-  "https://tv-puce-rho.vercel.app/cg_cnnhd.mpd",
-  "https://tv-puce-rho.vercel.app/cg_hbofam.mpd",
-  "https://tv-puce-rho.vercel.app/cg_hbohd.mpd",
-  "https://tv-puce-rho.vercel.app/cg_hbohits.mpd",
-  "https://tv-puce-rho.vercel.app/cg_hbohits.mpd",
-  "https://tv-puce-rho.vercel.app/cg_hbosign.mpd",
-  "https://tv-puce-rho.vercel.app/cg_onesports.mpd",
-  "https://tv-puce-rho.vercel.app/cg_onesports+HD.mpd",
-  "https://tv-puce-rho.vercel.app/cg_tagalogmovie.mpd",
-  "https://tv-puce-rho.vercel.app/cg_warnerhd.mpd",
-  "https://tv-puce-rho.vercel.app/chanel2.mpd",
-  "https://tv-puce-rho.vercel.app/cinemo-dash-abscbn.mpd",
-  "https://tv-puce-rho.vercel.app/Gtv.mpd",
-  "https://tv-puce-rho.vercel.app/nickelodeonHD.mpd",
-  "https://tv-puce-rho.vercel.app/OneNews.mpd",
-  "https://tv-puce-rho.vercel.app/OnePH.mpd",
-  "https://tv-puce-rho.vercel.app/PBOsd.mpd",
-  "https://tv-puce-rho.vercel.app/PbaRush.mpd",
-  "https://tv-puce-rho.vercel.app/TopAction_flix.mpd",
-  "https://tv-puce-rho.vercel.app/TV5.mpd",
-  "https://tv-puce-rho.vercel.app/warnerHD.mpd"
-
-
+  // DASH Channel List
+  const dashChannels = [
+    { name: "Cinemax", url: "https://tv-puce-rho.vercel.app/cg_cinemax.mpd" },
+    { name: "CNN HD", url: "https://tv-puce-rho.vercel.app/cg_cnnhd.mpd" },
+    { name: "HBO Family", url: "https://tv-puce-rho.vercel.app/cg_hbofam.mpd" },
+    { name: "HBO HD", url: "https://tv-puce-rho.vercel.app/cg_hbohd.mpd" },
+    { name: "HBO Hits", url: "https://tv-puce-rho.vercel.app/cg_hbohits.mpd" },
+    { name: "HBO Signature", url: "https://tv-puce-rho.vercel.app/cg_hbosign.mpd" },
+    { name: "One Sports", url: "https://tv-puce-rho.vercel.app/cg_onesports.mpd" },
+    { name: "One Sports HD", url: "https://tv-puce-rho.vercel.app/cg_onesports+HD.mpd" },
+    { name: "Tagalog Movies", url: "https://tv-puce-rho.vercel.app/cg_tagalogmovie.mpd" },
+    { name: "Warner HD", url: "https://tv-puce-rho.vercel.app/cg_warnerhd.mpd" },
+    { name: "Channel 2", url: "https://tv-puce-rho.vercel.app/chanel2.mpd" },
+    { name: "Cinemo", url: "https://tv-puce-rho.vercel.app/cinemo-dash-abscbn.mpd" },
+    { name: "GTV", url: "https://tv-puce-rho.vercel.app/Gtv.mpd" },
+    { name: "Nickelodeon HD", url: "https://tv-puce-rho.vercel.app/nickelodeonHD.mpd" },
+    { name: "One News", url: "https://tv-puce-rho.vercel.app/OneNews.mpd" },
+    { name: "One PH", url: "https://tv-puce-rho.vercel.app/OnePH.mpd" },
+    { name: "PBO", url: "https://tv-puce-rho.vercel.app/PBOsd.mpd" },
+    { name: "PBA Rush", url: "https://tv-puce-rho.vercel.app/PbaRush.mpd" },
+    { name: "TopAction Flix", url: "https://tv-puce-rho.vercel.app/TopAction_flix.mpd" },
+    { name: "TV5", url: "https://tv-puce-rho.vercel.app/TV5.mpd" },
+    { name: "Warner", url: "https://tv-puce-rho.vercel.app/warnerHD.mpd" }
   ];
 
+  // YouTube Queue
   const ytQueue = [
     "https://www.youtube.com/embed/jfKfPfyJRdk",
     "https://www.youtube.com/embed/5qap5aO4i9A"
   ];
 
+  // MP3 Playlist
   const mp3Files = [
     "/music/song1.mp3",
     "/music/song2.mp3"
@@ -97,12 +98,30 @@ const dashUrls = [
 
   let currentYT = parseInt(localStorage.getItem("ytIndex")) || 0;
   let currentMP3 = parseInt(localStorage.getItem("mp3Index")) || 0;
+  let currentDASH = parseInt(localStorage.getItem("dashIndex")) || 0;
 
   const dashPlayer = dashjs.MediaPlayer().create();
   const switcher = document.getElementById("modeSwitcher");
   const dashDiv = document.getElementById("dashPlayer");
   const ytDiv = document.getElementById("youtubePlayer");
   const mp3Div = document.getElementById("mp3Player");
+  const dashSelector = document.getElementById("dashSelector");
+
+  // Populate DASH selector
+  dashChannels.forEach((ch, index) => {
+    const opt = document.createElement("option");
+    opt.value = index;
+    opt.textContent = ch.name;
+    dashSelector.appendChild(opt);
+  });
+  dashSelector.value = currentDASH;
+
+  // Handle DASH channel change
+  dashSelector.addEventListener("change", () => {
+    currentDASH = parseInt(dashSelector.value);
+    localStorage.setItem("dashIndex", currentDASH);
+    dashPlayer.attachSource(dashChannels[currentDASH].url);
+  });
 
   function switchMode(mode) {
     dashDiv.style.display = "none";
@@ -113,7 +132,8 @@ const dashUrls = [
 
     if (mode === "dash") {
       dashDiv.style.display = "block";
-      dashPlayer.initialize(document.getElementById("videoPlayer"), dashUrls[0], true);
+      dashSelector.value = currentDASH;
+      dashPlayer.initialize(document.getElementById("videoPlayer"), dashChannels[currentDASH].url, true);
     } else if (mode === "youtube") {
       ytDiv.style.display = "block";
       document.getElementById("ytIframe").src = ytQueue[currentYT];
@@ -131,6 +151,16 @@ const dashUrls = [
     localStorage.setItem("mp3Index", currentMP3);
   }
 
+  // Auto-play next DASH channel when current ends
+  const videoElement = document.getElementById("videoPlayer");
+  videoElement.addEventListener("ended", () => {
+    currentDASH = (currentDASH + 1) % dashChannels.length;
+    dashSelector.value = currentDASH;
+    localStorage.setItem("dashIndex", currentDASH);
+    dashPlayer.attachSource(dashChannels[currentDASH].url);
+  });
+
+  // Init
   switcher.addEventListener("change", () => {
     switchMode(switcher.value);
   });
@@ -139,6 +169,7 @@ const dashUrls = [
   switcher.value = lastMode;
   switchMode(lastMode);
 
+  // Register Service Worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
       .then(reg => console.log('✅ Service Worker registered:', reg.scope))
